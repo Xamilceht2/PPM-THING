@@ -1,10 +1,10 @@
 class PPMimage:
-    def make_list(self, file):
-        temp = []
+    def make_list(self, file:str):
+        counter = -1
+        temp = file.split()
         row = int(self.dimensions.split()[1])
         for val in range(row):
-            for pixel in range(3):
-                temp.append(file(val))
+            pass
         print(temp)
     def __init__(self, input, output):
         self.values = []
