@@ -12,24 +12,23 @@ class PPMimage:
             temp += line.split()
             rcounter += len(temp)
             #print(temp, rcounter)
-            if rcounter >= row_val:
-                if rcounter > row_val:
-                    remaining = rcounter - row_val
-                    for excess in range(remaining):
-                        carry.append(temp[-excess])
-                    del temp[-remaining:]
-                self.values.append(row)
-                row = []
-                
-                rcounter = 0
+            if rcounter > row_val:
+                remaining = rcounter - row_val
+                for excess in range(remaining):
+                    carry.append(temp[-excess])
+                del temp[-remaining:]
+            
             for color in temp:
                 pcounter += 1
                 pixel.append(color)
                 if pcounter == 3:
-                    #print(pixel)
                     row.append(pixel)
                     pcounter = 0
                     pixel = []
+            self.values.append(row)
+            #print(row)
+            row = []     
+            rcounter = 0
             
             
         
@@ -39,16 +38,40 @@ class PPMimage:
         self.magic_num = ''
         self.dimensions = ''
         self.maxval = ''
+        self.output = output
 
-        with open(input) as file:
+        with open(input, 'r') as file:
             self.magic_num = file.readline()
             self.dimensions = file.readline()
             self.maxval = file.readline()
             self.make_list(file)
-            self.values.pop(0)
-        with open(output) as outfile:
-            pass
+
+    def negate_red(self):
+        for row in self.values:
+            for pixel in row:
+                red = int(pixel[0])
+                red = (red - int(self.maxval)) * (-1)
+                pixel[0] = str(red)
+
+    def flip_hori(self):
+        for row in self.values:
+            row.reverse()
+
+    def write_outfile(self):
+        with open(self.output, 'w') as outfile:
+            outfile.write(self.magic_num)
+            outfile.write(self.dimensions)
+            outfile.write(self.maxval)
+            for row in self.values:
+                for pixel in row:
+                    for color in pixel:
+                        outfile.write(color + ' ')
+                outfile.write('\n')
+
     def print(self):
-        print(self.magic_num, self.dimensions, self.values)
-test = PPMimage("test.ppm", "out.ppm")
-test.print()
+        print(self.magic_num, self.dimensions)
+        for row in self.values:
+            print(row)
+test = PPMimage("cake.ppm", "out.ppm")
+#test.flip_hori()
+test.write_outfile()
