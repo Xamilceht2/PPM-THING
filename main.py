@@ -72,6 +72,6 @@ class PPMimage:
         print(self.magic_num, self.dimensions)
         for row in self.values:
             print(row)
-test = PPMimage("cake.ppm", "out.ppm")
+test = PPMimage("test.ppm", "out9.ppm")
 #test.flip_hori()
 test.write_outfile()
