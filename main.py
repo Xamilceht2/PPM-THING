@@ -1,37 +1,32 @@
+import math
 class PPMimage:
-    def make_list(self, file:str):
-        pcounter = 0
+
+    def row_from_list(self, row):
+        counter = 0
+        new_row = []
         pixel = []
+        for value in row:
+            counter += 1
+            pixel.append(value)
+            if counter >= 3:
+                new_row.append(pixel)
+                counter = 0
+                pixel = []
+        return new_row
+    
+    def make_list(self, file:str):
         row = []
-        rcounter = 0
-        row_val = int(self.dimensions.split()[1]) * 3
-        carry = []
+        width = int(self.dimensions.split()[0])
+        colors = []
+
         for line in file:
-            temp = carry
-            carry = []
-            temp += line.split()
-            rcounter += len(temp)
-            #print(temp, rcounter)
-            if rcounter > row_val:
-                remaining = rcounter - row_val
-                for excess in range(remaining):
-                    carry.append(temp[-excess])
-                del temp[-remaining:]
-            
-            for color in temp:
-                pcounter += 1
-                pixel.append(color)
-                if pcounter == 3:
-                    row.append(pixel)
-                    pcounter = 0
-                    pixel = []
-            self.values.append(row)
-            #print(row)
-            row = []     
-            rcounter = 0
-            
-            
-        
+            line_list = line.strip().split()
+            colors += line_list
+        while len(colors) > 0:
+            row = colors[:width*3]
+            colors = colors[width*3:]
+            pixel_row = self.row_from_list(row)
+            self.values.append(pixel_row)
                 
     def __init__(self, input, output):
         self.values = []
@@ -56,6 +51,23 @@ class PPMimage:
     def flip_hori(self):
         for row in self.values:
             row.reverse()
+    
+    def grey_scale(self):
+        grey = 0
+        for row in self.values:
+            for pixel in row:
+                for color in pixel:
+                    grey += int(color)
+                grey = math.floor(grey/3)
+                pixel[0] = str(grey)
+                pixel[1] = str(grey)
+                pixel[2] = str(grey)
+        
+    def flatten_red(self):
+        red = '0'
+        for row in self.values:
+            for pixel in row:
+                pixel[0] = red
 
     def write_outfile(self):
         with open(self.output, 'w') as outfile:
@@ -72,6 +84,9 @@ class PPMimage:
         print(self.magic_num, self.dimensions)
         for row in self.values:
             print(row)
-test = PPMimage("test.ppm", "out9.ppm")
+test = PPMimage("cake.ppm", "out.ppm")
+#test.negate_red()
 #test.flip_hori()
+#test.grey_scale()
+#test.flatten_red()
 test.write_outfile()
