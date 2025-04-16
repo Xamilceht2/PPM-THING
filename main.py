@@ -2,6 +2,11 @@ import math
 class PPMimage:
 
     def row_from_list(self, row):
+        '''
+        gets a list (row) from file turning the list into a list of lists of pixels (r,b,g)
+        input: row list
+        output: lists of pixel lists
+        '''
         counter = 0
         new_row = []
         pixel = []
@@ -15,6 +20,11 @@ class PPMimage:
         return new_row
     
     def make_list(self, file:str):
+        '''
+        with the given file turns it into a 3d list by row, pixel and color value.
+        input: opened ppm file
+        sets the self.values list to 3d list from file.
+        '''
         row = []
         width = int(self.dimensions.split()[0])
         colors = []
@@ -29,6 +39,10 @@ class PPMimage:
             self.values.append(pixel_row)
                 
     def __init__(self, input, output):
+        '''
+        Stores thje values of magic num, dimensions, max value, pixels, and creates output file
+        opens given file setting values to corresponding variables
+        '''
         self.values = []
         self.magic_num = ''
         self.dimensions = ''
@@ -42,6 +56,9 @@ class PPMimage:
             self.make_list(file)
 
     def negate_red(self):
+        '''
+        sets every red value in the pixels to its opposite ie. 250 = 5
+        '''
         for row in self.values:
             for pixel in row:
                 red = int(pixel[0])
@@ -49,10 +66,16 @@ class PPMimage:
                 pixel[0] = str(red)
 
     def flip_hori(self):
+        '''
+        flips every row list for a horizontally flipped image
+        '''
         for row in self.values:
             row.reverse()
     
     def grey_scale(self):
+        '''
+        Gets averaged value of each pixel by rgb and sets values to averaged value
+        '''
         grey = 0
         for row in self.values:
             for pixel in row:
@@ -64,12 +87,18 @@ class PPMimage:
                 pixel[2] = str(grey)
         
     def flatten_red(self):
+        '''
+        turns every red pixel value to 0
+        '''
         red = '0'
         for row in self.values:
             for pixel in row:
                 pixel[0] = red
 
     def write_outfile(self):
+        '''
+        writes out the new stored values in a new file
+        '''
         with open(self.output, 'w') as outfile:
             outfile.write(self.magic_num)
             outfile.write(self.dimensions)
@@ -81,6 +110,9 @@ class PPMimage:
                 outfile.write('\n')
 
     def print(self):
+        '''
+        prints for testing
+        '''
         print(self.magic_num, self.dimensions)
         for row in self.values:
             print(row)
